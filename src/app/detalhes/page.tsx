@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 export default function Detalhes() {
   const [atividade, setAtividade] = useState(null);
   const searchParams = useSearchParams();
-  const id = parseInt(searchParams.get('id')); // Converte para número, se necessário
+  const id = parseInt(searchParams.get('id'));
 
   useEffect(() => {
     if (id) {
@@ -15,7 +15,6 @@ export default function Detalhes() {
         setAtividade(atividadeEncontrada);
       } else {
         console.error('Atividade não encontrada');
-        // Redirecionar ou exibir uma mensagem de erro
       }
     }
   }, [id]);
