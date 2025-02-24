@@ -1,101 +1,305 @@
-import Image from "next/image";
+// 'use client';
+// import { useState, useEffect } from 'react';
+// import { useRouter } from 'next/navigation';
+
+// export default function Home() {
+//   const [atividades, setAtividades] = useState([]);
+//   const [termoBusca, setTermoBusca] = useState('');
+//   const [ordemCrescente, setOrdemCrescente] = useState(true);
+//   const [categoriaFiltro, setCategoriaFiltro] = useState('Todas');
+//   const [atividadesProximas, setAtividadesProximas] = useState([]);
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     const atividadesSalvas = JSON.parse(localStorage.getItem('atividades') || '[]');
+//     setAtividades(atividadesSalvas);
+
+//     // Filtra atividades próximas (nas próximas 24 horas)
+//     const hoje = new Date();
+//     const umDiaDepois = new Date();
+//     umDiaDepois.setDate(hoje.getDate() + 1);  // A data de um dia após hoje
+
+//     const proximas = atividadesSalvas.filter(atividade => {
+//       const dataAtividade = new Date(atividade.data);
+//       return dataAtividade >= hoje && dataAtividade <= umDiaDepois;
+//     });
+
+//     setAtividadesProximas(proximas);
+//   }, []);
+
+//   const excluirAtividade = (id) => {
+//     const novasAtividades = atividades.filter(atividade => atividade.id !== id);
+//     setAtividades(novasAtividades);
+//     localStorage.setItem('atividades', JSON.stringify(novasAtividades));
+
+//     // Atualiza as atividades próximas após exclusão
+//     const hoje = new Date();
+//     const umDiaDepois = new Date();
+//     umDiaDepois.setDate(hoje.getDate() + 1);  // A data de um dia após hoje
+
+//     const proximas = novasAtividades.filter(atividade => {
+//       const dataAtividade = new Date(atividade.data);
+//       return dataAtividade >= hoje && dataAtividade <= umDiaDepois;
+//     });
+
+//     setAtividadesProximas(proximas);
+//   };
+
+//   const editarAtividade = (id) => {
+//     router.push(`/editar-atividade?id=${id}`);
+//   };
+
+//   // Ordena as atividades por data
+//   const atividadesOrdenadas = [...atividades].sort((a, b) => {
+//     return ordemCrescente
+//       ? new Date(a.data).getTime() - new Date(b.data).getTime()
+//       : new Date(b.data).getTime() - new Date(a.data).getTime();
+//   });
+
+//   // Filtra atividades com base no termo de busca e na categoria selecionada
+//   const atividadesFiltradas = atividadesOrdenadas.filter(atividade =>
+//     (atividade.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
+//     atividade.responsavel.toLowerCase().includes(termoBusca.toLowerCase())) &&
+//     (categoriaFiltro === 'Todas' || atividade.categoria === categoriaFiltro)
+//   );
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
+//       <h1 className="text-3xl font-bold text-gray-800 mb-4">📌 Lista de Atividades Acadêmicas</h1>
+
+//       <button 
+//         onClick={() => router.push('/nova-atividade')}
+//         className="mb-6 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+//       >
+//         ➕ Nova Atividade
+//       </button>
+
+//       {atividadesProximas.length > 0 && (
+//         <div className="bg-yellow-200 text-yellow-800 p-3 rounded-md mb-4 w-full max-w-md">
+//           <h3 className="font-semibold">🔔 Atividades Próximas!</h3>
+//           <ul className="list-disc ml-5">
+//             {atividadesProximas.map((atividade) => (
+//               <li key={atividade.id}>
+//                 <strong>{atividade.nome}</strong> - {new Date(new Date(atividade.data).setDate(new Date(atividade.data).getDate() + 1)).toLocaleDateString()}
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       )}
+
+//       <input 
+//         type="text" 
+//         placeholder="🔍 Buscar atividade..." 
+//         value={termoBusca} 
+//         onChange={(e) => setTermoBusca(e.target.value)}
+//         className="mb-4 p-2 border rounded w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+//       />
+
+//       <select 
+//         value={categoriaFiltro} 
+//         onChange={(e) => setCategoriaFiltro(e.target.value)} 
+//         className="mb-4 p-2 border rounded w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+//       >
+//         <option value="Todas">Todas as Categorias</option>
+//         <option value="Palestra">Palestra</option>
+//         <option value="Curso">Curso</option>
+//         <option value="Evento">Evento</option>
+//         <option value="Seminário">Seminário</option>
+//         <option value="Workshop">Workshop</option>
+//       </select>
+
+//       <button 
+//         onClick={() => setOrdemCrescente(!ordemCrescente)}
+//         className="mb-4 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
+//       >
+//         {ordemCrescente ? "⬇️ Ordem Crescente" : "⬆️ Ordem Decrescente"}
+//       </button>
+
+//       {atividadesFiltradas.length === 0 ? (
+//         <p className="mt-4 text-gray-600">Nenhuma atividade encontrada.</p>
+//       ) : (
+//         <ul className="mt-6 w-full max-w-2xl">
+//           {atividadesFiltradas.map((atividade) => (
+//             <li key={atividade.id} className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col">
+//               <h3 className="text-xl font-semibold text-gray-900">{atividade.nome}</h3>
+//               <p className="text-gray-700"><strong>Responsável:</strong> {atividade.responsavel}</p>
+//               <p className="text-gray-700"><strong>Data:</strong> {new Date(new Date(atividade.data).setDate(new Date(atividade.data).getDate() + 1)).toLocaleDateString()}</p>
+//               <p className="text-gray-700"><strong>Descrição:</strong> {atividade.descricao}</p>
+//               <p className="text-gray-700"><strong>Categoria:</strong> <span className="text-blue-600">{atividade.categoria}</span></p>
+//               <div className="mt-4 flex gap-2">
+//                 <button 
+//                   onClick={() => editarAtividade(atividade.id)}
+//                   className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+//                 >
+//                   ✏️ Editar
+//                 </button>
+//                 <button 
+//                   onClick={() => excluirAtividade(atividade.id)}
+//                   className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+//                 >
+//                   ❌ Excluir
+//                 </button>
+//               </div>
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//     </div>
+//   );
+// }
+
+
+'use client';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [atividades, setAtividades] = useState([]);
+  const [termoBusca, setTermoBusca] = useState('');
+  const [ordemCrescente, setOrdemCrescente] = useState(true);
+  const [categoriaFiltro, setCategoriaFiltro] = useState('Todas');
+  const [atividadesProximas, setAtividadesProximas] = useState([]);
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    const atividadesSalvas = JSON.parse(localStorage.getItem('atividades') || '[]');
+    setAtividades(atividadesSalvas);
+
+    // Filtra atividades próximas (nas próximas 24 horas)
+    const hoje = new Date();
+    const umDiaDepois = new Date();
+    umDiaDepois.setDate(hoje.getDate() + 1);  // A data de um dia após hoje
+
+    const proximas = atividadesSalvas.filter(atividade => {
+      const dataAtividade = new Date(atividade.data);
+      return dataAtividade >= hoje && dataAtividade <= umDiaDepois;
+    });
+
+    setAtividadesProximas(proximas);
+  }, []);
+
+  const excluirAtividade = (id) => {
+    const novasAtividades = atividades.filter(atividade => atividade.id !== id);
+    setAtividades(novasAtividades);
+    localStorage.setItem('atividades', JSON.stringify(novasAtividades));
+
+    // Atualiza as atividades próximas após exclusão
+    const hoje = new Date();
+    const umDiaDepois = new Date();
+    umDiaDepois.setDate(hoje.getDate() + 1);  // A data de um dia após hoje
+
+    const proximas = novasAtividades.filter(atividade => {
+      const dataAtividade = new Date(atividade.data);
+      return dataAtividade >= hoje && dataAtividade <= umDiaDepois;
+    });
+
+    setAtividadesProximas(proximas);
+  };
+
+  const editarAtividade = (id) => {
+    router.push(`/editar-atividade?id=${id}`);
+  };
+
+  // Ordena as atividades por data
+  const atividadesOrdenadas = [...atividades].sort((a, b) => {
+    return ordemCrescente
+      ? new Date(a.data).getTime() - new Date(b.data).getTime()
+      : new Date(b.data).getTime() - new Date(a.data).getTime();
+  });
+
+  // Filtra atividades com base no termo de busca e na categoria selecionada
+  const atividadesFiltradas = atividadesOrdenadas.filter(atividade =>
+    (atividade.nome.toLowerCase().includes(termoBusca.toLowerCase()) ||
+    atividade.responsavel.toLowerCase().includes(termoBusca.toLowerCase())) &&
+    (categoriaFiltro === 'Todas' || atividade.categoria === categoriaFiltro)
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">📌 Lista de Atividades Acadêmicas</h1>
+
+      <button 
+        onClick={() => router.push('/nova-atividade')}
+        className="mb-6 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+      >
+        ➕ Nova Atividade
+      </button>
+
+      {atividadesProximas.length > 0 && (
+        <div className="bg-yellow-200 text-yellow-800 p-3 rounded-md mb-4 w-full max-w-md">
+          <h3 className="font-semibold">🔔 Atividades Próximas!</h3>
+          <ul className="list-disc ml-5">
+            {atividadesProximas.map((atividade) => (
+              <li key={atividade.id}>
+                <strong>{atividade.nome}</strong> - {new Date(new Date(atividade.data).setDate(new Date(atividade.data).getDate() + 1)).toLocaleDateString()}
+              </li>
+            ))}
+          </ul>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
+
+      <input 
+        type="text" 
+        placeholder="🔍 Buscar atividade..." 
+        value={termoBusca} 
+        onChange={(e) => setTermoBusca(e.target.value)}
+        className="mb-4 p-2 border rounded w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+
+      <select 
+        value={categoriaFiltro} 
+        onChange={(e) => setCategoriaFiltro(e.target.value)} 
+        className="mb-4 p-2 border rounded w-full max-w-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+      >
+        <option value="Todas">Todas as Categorias</option>
+        <option value="Palestra">Palestra</option>
+        <option value="Curso">Curso</option>
+        <option value="Evento">Evento</option>
+        <option value="Seminário">Seminário</option>
+        <option value="Workshop">Workshop</option>
+      </select>
+
+      <button 
+        onClick={() => setOrdemCrescente(!ordemCrescente)}
+        className="mb-4 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
+      >
+        {ordemCrescente ? "⬇️ Ordem Crescente" : "⬆️ Ordem Decrescente"}
+      </button>
+
+      {atividadesFiltradas.length === 0 ? (
+        <p className="mt-4 text-gray-600">Nenhuma atividade encontrada.</p>
+      ) : (
+        <ul className="mt-6 w-full max-w-2xl">
+          {atividadesFiltradas.map((atividade) => (
+            <li key={atividade.id} className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col">
+              <h3 className="text-xl font-semibold text-gray-900">{atividade.nome}</h3>
+              <p className="text-gray-700"><strong>Responsável:</strong> {atividade.responsavel}</p>
+              <p className="text-gray-700"><strong>Data:</strong> {new Date(new Date(atividade.data).setDate(new Date(atividade.data).getDate() + 1)).toLocaleDateString()}</p>
+              <p className="text-gray-700"><strong>Categoria:</strong> <span className="text-blue-600">{atividade.categoria}</span></p>
+              <div className="mt-4 flex gap-2">
+                <button 
+                  onClick={() => editarAtividade(atividade.id)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+                >
+                  ✏️ Editar
+                </button>
+                <button 
+                  onClick={() => excluirAtividade(atividade.id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                >
+                  ❌ Excluir
+                </button>
+                <button 
+                  onClick={() => router.push(`/detalhes?id=${atividade.id}`)}
+                  className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition"
+                >
+                  🔍 Ver Detalhes
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
